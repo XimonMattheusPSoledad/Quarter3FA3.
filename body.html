@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <title>Pirate Treasure Randomizer</title>
+  
+</head>
+<body>
+<div class="container">
+  <h1>Randomizer</h1>
+  <h2>The Golden Age of Piracy</h2>
+  <div id="story">  </div>
+</div>
+
+<script>
+  let raw1 = Math.random() * 20; 
+  let raw2 = Math.random() * 20; 
+  let raw3 = Math.random() * 20; 
+
+  let num1 = Number.isInteger(raw1) ? raw1 : Math.ceil(raw1);
+  let num2 = Number.isInteger(raw2) ? raw2 : Math.ceil(raw2);
+  let num3 = Number.isInteger(raw3) ? raw3 : Math.ceil(raw3);
+
+  let biggest = Math.max(num1, num2, num3);
+
+  let topCaptains = [];
+  if (num1 === biggest) topCaptains.push("Captain Hoshino");
+  if (num2 === biggest) topCaptains.push("Captain Kimura");
+  if (num3 === biggest) topCaptains.push("Captain Shibumi");
+
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let captainLetters = {};
+
+  function numberToLetter(num) {
+    if (num === 0) {
+      return "No letter (0th doesn't exist!)";
+    } else if (num > 26) {
+      return "Out of range (only 26 letters)";
+    } else {
+      return alphabet[num - 1];
+    }
+  }
+
+  topCaptains.forEach(captain => {
+    let score;
+    if (captain === "Captain Hoshino") {
+      score = num1;
+    } else if (captain === "Captain Kimura") {
+      score = num2;
+    } else {
+      score = num3;
+    }
+    captainLetters[captain] = numberToLetter(score);
+  });
+
+  let totalMinutes = num2 * num3;
+  let hours = Math.floor(totalMinutes / 60);
+  let minutes = totalMinutes % 60;
+
+  let storyText = `
+    <p>
+      In the Golden Age of Piracy, three infamous captains race 
+      to find hidden treasure chests scattered across the seas:
+    </p>
+    <ul class="pirates">
+      <li><strong>Captain Hoshino</strong>: <span class="highlight">${num1}</span></li>
+      <li><strong>Captain Kimura</strong>: <span class="highlight">${num2}</span></li>
+      <li><strong>Captain Shibumi</strong>: <span class="highlight">${num3}</span></li>
+    </ul>
+  `;
+
+  storyText += `
+    <p>
+      The highest haul of gold coins is 
+      <span class="highlight">${biggest}</span>.
+      <br>
+      ${
+        topCaptains.length === 1
+          ? `Leading the hunt: <span class="highlight">${topCaptains[0]}</span>!`
+          : `It's a tie between <span class="highlight">${topCaptains.join(" & ")}</span>!`
+      }
+    </p>
+  `;
+
+  let letterList = topCaptains.map(captain => {
+    let letter = captainLetters[captain];
+    
+    let score = (captain === "Captain Hoshino") ? num1 
+              : (captain === "Captain Kimura") ? num2 
+              : num3;
+    return `<li>The number (<span class="highlight">${score}</span>) → <span class="highlight">${letter}</span></li>`;
+  }).join("");
+
+  storyText += `
+    <h3>Hidden Letter within the Loot</h3>
+    <p>
+      The one with the greatest bounty discovers another 
+      letter left by the great pirate king, which would reveal 
+        the code to his vault when all 30 letters were put together:
+    </p>
+    <ul>
+      ${letterList}
+    </ul>
+  `;
+
+  storyText += `
+    <p>
+      Meanwhile, Captain Kimura and Captain Shibumi formed a brief alliance, 
+      spending <span class="highlight">${totalMinutes}</span> minutes 
+      searching an ancient temple. 
+      That's <span class="highlight">${hours} hour(s)</span> 
+      and <span class="highlight">${minutes} minute(s)</span> 
+      of perilous exploration!
+    </p>
+  `;
+
+  document.getElementById("story").innerHTML = storyText;
+</script>
+</body>
+</html>
